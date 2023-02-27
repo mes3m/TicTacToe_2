@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tic Tac Toe</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+        <style>
+            body {
+                background-color: white;
+            }
+            .btn-lg {
+                height: 100px;
+                width: 100px;
+                margin-left: -5px;
+                font-size: 20px;
+                cursor: pointer;
+                background-color: #ffe6ff;
+            }
+
+            .mt-3 {
+                align-content: center;
+                text-align: center;
+                margin-top: 50px;
+            }
+
+            #playAgainBtn {
+                width: 300px;
+                margin-top: 10px;
+            }
+
+            /* CSS */
+            .button-58 {
+                align-items: center;
+                background-color: #ffe6ff;
+                border: 2px solid #ffe6ff;
+                box-sizing: border-box;
+                color: #000;
+                cursor: pointer;
+                display: inline-flex;
+                fill: #000;
+                font-family: Inter,sans-serif;
+                font-size: 16px;
+                font-weight: 600;
+                height: 100PX;
+                justify-content: center;
+                letter-spacing: -.8px;
+                line-height: 24px;
+                min-width: 100px;
+                outline: 0;
+                padding: 0 17px;
+                text-align: center;
+                text-decoration: none;
+                transition: all .3s;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+            }
+
+            .button-58:focus {
+                color: #171e29;
+            }
+
+            .button-58:hover {
+                background-color: #ffb3ff;
+                border-color: #ffb3ff;
+                fill: #ffe6ff;
+            }
+
+            .button-58:active {
+                background-color: #ffb3ff;
+                border-color: #ffb3ff;
+                fill: #ffe6ff;
+            }
+
+            @media (min-width: 768px) {
+                .button-58 {
+                    min-width: 100px;
+                }
+            }
+
+            #btn1, #btn4, #btn7 {
+                border-right: 2px solid black;
+                border-left: 2px solid black;
+            }
+
+            #btn3, #btn4, #btn5 {
+                border-top: 2px solid black;
+                border-bottom: 2px solid black;
+            }
+
+            
+        </style>
+
+    </head>
+
+    <body>
+
+        
+
+        <div class="container mt-3" id="TicTacToeBoard">
+            Select Level:
+            <select name="level" id="level">
+                <option value="1">Easy</option>
+                <option value="2">Medium</option>
+            </select>
+
+            <h3 id="message">Player 1 turn!</h3>
+            <div class="w3-container" style="float: left;">
+                <span class="w3-tag w3-jumbo w3-red" style="width: 60px !important;">X</span>
+                <span class="w3-tag w3-jumbo w3-blue" id="x">00</span>
+            </div>
+            <div class="w3-container" style="float: right;">
+                <span class="w3-tag w3-jumbo w3-yellow" style="width: 60px !important;">O</span>
+                <span class="w3-tag w3-jumbo w3-blue" id="o">00</span>
+            </div>
+
+            <div class="btn-group row">
+                <button id="btn0" value="0" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn1" value="1" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn2" value="2" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+            </div>
+            <div class="btn-group row">
+                <button id="btn3" value="3" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn4" value="4" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn5" value="5" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+            </div>
+            <div class="btn-group row">
+                <button id="btn6" value="6" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn7" value="7" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+                <button id="btn8" value="8" type="button" class="btn btn-lg ticTacToeBoardBtns button-58" onclick="buttonClicked(this)">-</button>
+            </div>
+
+            <div class="btn-group row" id="againBtnDiv">
+                
+            </div>
+        </div>
+
+    </body>
+
+
+    <script>
+        var currentPlayer = 1;      // 1 = X ---- 2 = O
+        var isGameInProgress = true;
+                    //      0   1   2   3   4   5   6   7   8
+        var gameState = [   0,  0,  0,  0,  0,  0,  0,  0,  0];
+
+         // gameState[winningCombinations[5][1]] = 5
+
+        // 2D ARRAY = ND ARRAY
+        var winningCombinations = 
+        [
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [2,4,6],
+            [0,4,8]
+        ];
+
+        var x = 0, o = 0;
+
+        var gameDifficultyLevel = document.getElementById("level").value;
+
+        //   winningCombinations[5][1] = 5
+        //   winningCombinations[4][2] = 7
+        //   winningCombinations[0][0] = 0
+        //   winningCombinations[7][2] = 8
+
+
+        console.log("Page Load", gameState);
+
+        function buttonClicked(btn) {
+
+            DisableAllButtons();
+
+            gameDifficultyLevel = document.getElementById("level").value;
+            
+            if (gameState[btn.value] == 0 && isGameInProgress) {
+                
+                gameState[btn.value] = currentPlayer;
+    
+                if (currentPlayer == 1) {
+                    btn.innerHTML = "X";
+                    currentPlayer = 2;
+                }
+                else {
+                    btn.innerHTML = "O";
+                    currentPlayer = 1;
+                }
+
+                document.getElementById("message").innerText = "Player " + currentPlayer + " turn!";
+
+                Win_Draw();
+
+                // to show like that computer is thinking
+                setTimeout(() => {
+
+                    // if this is a computer turn
+                    if (currentPlayer == 2 && gameState.find(function (nr) { return nr < 1; }) == 0) {
+
+                        var randomValue = -1;
+
+                        if (gameDifficultyLevel == 2) {
+                            // checking each and every combination
+                            for (let i = 0; i < winningCombinations.length; i++) {
+                                // checking if in a combination we have a pair of ticks of computer players
+                                if (
+                                    (gameState[winningCombinations[i][0]] == 2 && gameState[winningCombinations[i][1]] == 2) ||
+                                    (gameState[winningCombinations[i][1]] == 2 && gameState[winningCombinations[i][2]] == 2) ||
+                                    (gameState[winningCombinations[i][0]] == 2 && gameState[winningCombinations[i][2]] == 2)
+                                ) {
+                                    // if in the paired combination has any button free to click, means having value 0
+                                    // then use that buttons number in randomValue
+                                    if (gameState[winningCombinations[i][0]] == 0) {
+                                        randomValue = winningCombinations[i][0];
+                                    }
+                                    else if (gameState[winningCombinations[i][1]] == 0) {
+                                        randomValue = winningCombinations[i][1];
+                                    }
+                                    else if (gameState[winningCombinations[i][2]] == 0) {
+                                        randomValue = winningCombinations[i][2];
+                                    }
+    
+                                    // as we have found the button then break the loop
+                                    if (randomValue != -1) {
+                                        break;
+                                    }
+                                }
+                            }
+    
+                            // here you will stop player 1 by winning
+                            if (randomValue == -1) {
+                                // checking each and every combination
+                                for (let i = 0; i < winningCombinations.length; i++) {
+                                    // checking if in a combination we have a pair of ticks of computer players
+                                    if (
+                                        (gameState[winningCombinations[i][0]] == 1 && gameState[winningCombinations[i][1]] == 1) ||
+                                        (gameState[winningCombinations[i][1]] == 1 && gameState[winningCombinations[i][2]] == 1) ||
+                                        (gameState[winningCombinations[i][0]] == 1 && gameState[winningCombinations[i][2]] == 1)
+                                    ) {
+                                        // if in the paired combination has any button free to click, means having value 0
+                                        // then use that buttons number in randomValue
+                                        if (gameState[winningCombinations[i][0]] == 0) {
+                                            randomValue = winningCombinations[i][0];
+                                        }
+                                        else if (gameState[winningCombinations[i][1]] == 0) {
+                                            randomValue = winningCombinations[i][1];
+                                        }
+                                        else if (gameState[winningCombinations[i][2]] == 0) {
+                                            randomValue = winningCombinations[i][2];
+                                        }
+    
+                                        // as we have found the button then break the loop
+                                        if (randomValue != -1) {
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // if randomValue is still = -1, then it means you found nothing in loop, so generate a random number by system
+                        if (randomValue == -1) {
+                            // getting a random number from 0 to 9
+                            randomValue = Math.floor(Math.random() * 9);
+
+                            // the number we have got, is already filled.
+                            while (gameState[randomValue] != 0) {
+                                randomValue = Math.floor(Math.random() * 9);
+                            }
+                        }
+
+                        
+
+                        // placed "O" on the random number got by system
+                        // "btn" + randomValue = generating a dynamic ID
+                        document.getElementById("btn" + randomValue).innerHTML = "O";
+                        // in game state set user 2's (user 2 = computer) value
+                        gameState[randomValue] = 2;
+
+                        Win_Draw();
+
+                        // give the turn back to player 1
+                        currentPlayer = 1;
+                    }
+
+                    EnableAllButtons();
+                }, 1000);   // 1000 = 1 Second
+            }
+
+            console.log("Button Clicked", gameState);
+        }
+
+        function PlayAgain() {
+            document.getElementById("message").innerText = "Player " + currentPlayer + " turn!";
+            document.getElementById("againBtnDiv").innerHTML = "";
+            isGameInProgress = true;
+            gameState = [   0,  0,  0,  0,  0,  0,  0,  0,  0];
+            gameDifficultyLevel = document.getElementById("level").value;
+
+            for (let i = 0; i < gameState.length; i++) {
+                document.getElementById("btn" + i).innerHTML = "-";
+                document.getElementById("btn" + i).style.backgroundColor = "#ffe6ff";
+            }
+        }
+
+        function Win_Draw() {
+            for (let i = 0; i < winningCombinations.length; i++) {
+
+                // everything about winning
+                if (
+                    gameState[winningCombinations[i][0]] > 0 && 
+                    gameState[winningCombinations[i][1]] > 0 && 
+                    gameState[winningCombinations[i][2]] > 0 && 
+                    gameState[winningCombinations[i][0]] == gameState[winningCombinations[i][1]] && 
+                    gameState[winningCombinations[i][1]] == gameState[winningCombinations[i][2]]
+                    ) 
+                {
+                    // by this we will stop user from clicking the button, means the game is ended
+                    isGameInProgress = false;
+
+                    // display winning message by player name
+                    document.getElementById("message").innerText = "Player " + gameState[winningCombinations[i][0]] + " WON";
+
+                    // show play again button
+                    document.getElementById("againBtnDiv").innerHTML = "<button id='playAgainBtn' type='button' class='btn' onclick='PlayAgain()'>Play Again</button>";
+
+                    // highlighted the winning cells with green color
+                    document.getElementById("btn" + winningCombinations[i][0]).style.backgroundColor = "#8cd98c";
+                    document.getElementById("btn" + winningCombinations[i][1]).style.backgroundColor = "#8cd98c";
+                    document.getElementById("btn" + winningCombinations[i][2]).style.backgroundColor = "#8cd98c";
+
+                    // set winning player in current player so he can click first
+                    currentPlayer = gameState[winningCombinations[i][0]];
+
+                    if (gameState[winningCombinations[i][0]] == 1) {
+                        x++;
+                    }
+                    else if (gameState[winningCombinations[i][0]] == 2) {
+                        o++;
+                    }
+                    document.getElementById("x").innerHTML = x < 10 ? "0"+x : x;
+                    document.getElementById("o").innerHTML = o < 10 ? "0"+o : o;
+
+                    // stop everything no further checking for winner because we have already got it
+                    break;
+                }
+                else {
+                    // check if game is ended or not
+                    var gameCompleted = true;
+                    
+                    // we are checking if every box is filled or not
+                    for (let i = 0; i < gameState.length; i++) {
+                        // if any box has 0 then it means it is not clicked yet
+                        if (gameState[i] == 0) {
+                            gameCompleted = false;
+                        }
+                    }
+
+                    // if gameCompleted = true then we will show draw game message
+                    if (gameCompleted) {
+                        
+                        // draw message
+                        document.getElementById("message").innerText = "It's a DRAW";
+
+                        // show play again button
+                        document.getElementById("againBtnDiv").innerHTML = "<button id='playAgainBtn' type='button' class='btn' onclick='PlayAgain()'>Play Again</button>";
+
+                        // setting player 1 as a current player
+                        currentPlayer = 1;
+
+                        // if game is completed then break the loop
+                        break;
+                    }
+                }
+            }
+        }
+
+        function DisableAllButtons() {
+            for (let i = 0; i < gameState.length; i++) {
+                document.getElementById("btn" + i).disabled = true;
+            }
+        }
+
+        function EnableAllButtons() {
+            for (let i = 0; i < gameState.length; i++) {
+                document.getElementById("btn" + i).disabled = false;
+            }
+        }
+
+    </script>
+
+</html>
